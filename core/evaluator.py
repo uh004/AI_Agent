@@ -44,28 +44,6 @@ def _ensure_state_schema(state: Dict) -> Dict:
     state["conversation"] = conv
     return state
 
-
-# ===== 헬퍼: 0점 지표 기반 후속질문 생성 =====
-def _make_followup_question(strategy: str, zeros: List[str], prev_q: str) -> str:
-    # 한글 지표명 표준화
-    norm = {"구체적":"구체성", "구체성":"구체성", "일관성":"일관성", "적합성":"적합성", "논리성":"논리성"}
-    zeros = [norm.get(z, z) for z in zeros]
-
-    parts = []
-    if "구체성" in zeros:
-        parts.append("정확도/처리시간 등 수치, 본인 역할, 적용한 방법(전처리/모델/튜닝), 그리고 Before→After 변화를 수치로 알려주세요.")
-    if "일관성" in zeros:
-        parts.append("주장→근거→사례의 흐름이 보이도록 STAR 구조(상황-과제-행동-결과)로 정리해서 답해주세요.")
-    if "적합성" in zeros:
-        parts.append("해당 경험이 지원 직무 과업과 어떻게 연결되는지 명확히 밝혀주세요.")
-    if "논리성" in zeros:
-        parts.append("문제 원인 분석→시도한 대안→선택 근거→결과 및 교훈 순서로 설명해주세요.")
-
-    tail = " ".join(parts) if parts else "핵심 근거와 수치를 보강해 구체적으로 답해주세요."
-    head = "이전 답변을 보강해주세요. " if prev_q else ""
-    return f"{head}{strategy} 영역에서 다음을 중심으로 다시 답변해 주세요. {tail}"
-
-
 def evaluate_answer(state: Dict) -> Dict:
     """답변을 4개 기준(구체성/일관성/적합성/논리성)으로 0/1 채점하고 state.evaluation을 갱신합니다."""
     state = _ensure_state_schema(state)

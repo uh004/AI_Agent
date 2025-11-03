@@ -1,6 +1,6 @@
-from typing import Dict, List
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
+
 
 from models.schemas import DeepQuestion
 from models.state_types import InterviewState
@@ -67,3 +67,4 @@ def generate_question(state: InterviewState) -> InterviewState:
         "current_question": response.question.strip(),
         "current_answer": ""
     }
+
